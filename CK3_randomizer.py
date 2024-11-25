@@ -1,7 +1,7 @@
 import random
 
 #Variables, can be customized
-min_num_of_traits = 3 
+min_num_of_traits = 3
 max_num_of_traits = 6
 chance_of_genetic = 80 # in percent
 max_num_of_genetic = 1
@@ -51,73 +51,96 @@ genetic = [[["Hideous",-30],["Ugly",-20],["Homely",-10],["Comely",40],["Pretty /
 stats = ["Diplomacy", "Martial", "Stewardship", "Intrigue", "Learning","Prowess"]
 
 # Character Creation
-cost = []
+def Creation(educ):
+    cost = []
+        # Age
+    sex = random.choice(["Male","Female"])
+    sex_orient = random.choices(["Heterosexual","Homosexual","Bisexual","Asexual"],sex_orientation_weights)
+    age = random.randint(min_age, max_age)
+    if age > 70:
+        cost.append(0)
+    else:
+        cost.append(age_cost[age])
 
-    # Age
-sex = random.choice(["Male","Female"])
-sex_orient = random.choices(["Heterosexual","Homosexual","Bisexual","Asexual"],sex_orientation_weights)
-age = random.randint(min_age, max_age)
-if age > 70:
-    cost.append(0)
-else:
-    cost.append(age_cost[age])
+        # Education
+    education_level = random.choices([0,1,2,3,4],education_level_weights)
+    if educ == 0:
+        education_trait = random.randint(0,4)
+    elif educ in [1,2,3,4,5]:
+        education_trait = educ - 1
+    education_final = educations[education_trait][education_level[0]]
+    cost.append(education_cost[education_level[0]])
 
-    # Education
-education_level = random.choices([0,1,2,3,4],education_level_weights)
-education_trait = random.randint(0,4)
-education_final = educations[education_trait][education_level[0]]
-cost.append(education_cost[education_level[0]])
+        #traits
+    num_of_traits = random.randint(min_num_of_traits, max_num_of_traits)
+    traits_char = []
+    for _ in range(num_of_traits):
+        duo = random.choice(traits) #can be a trio now, doesn't change anything
+        traits.remove(duo)
+        chosen = random.choice(duo)
+        traits_char.append(chosen[0])
+        cost.append(chosen[1])
 
-    #traits
-num_of_traits = random.randint(min_num_of_traits, max_num_of_traits)
-traits_char = []
-for _ in range(num_of_traits):
-    duo = random.choice(traits) #can be a trio now, doesn't change anything
-    traits.remove(duo)
-    chosen = random.choice(duo)
-    traits_char.append(chosen[0])
-    cost.append(chosen[1])
-    
-    #genetic
-genetics=[]
-for _ in range(max_num_of_genetic):
-    if random.randint(1, 100) <= chance_of_genetic:
-        category = random.choice(genetic)
-        genetic.remove(category)
-        chosen = random.choices(category,genetics_level_weights)
-        genetics.append(chosen[0][0])
-        cost.append(chosen[0][1])
+        #genetic
+    genetics=[]
+    for _ in range(max_num_of_genetic):
+        if random.randint(1, 100) <= chance_of_genetic:
+            category = random.choice(genetic)
+            genetic.remove(category)
+            chosen = random.choices(category,genetics_level_weights)
+            genetics.append(chosen[0][0])
+            cost.append(chosen[0][1])
 
-#stats
-stats_character = []
-for stat in stats:
-    stat_value = random.randint(min_stat, max_stat)
-    stats_character.append(stat_value)
-    cost.append(stats_cost[stat_value])
-print()
+    #stats
+    stats_character = []
+    for stat in stats:
+        stat_value = random.randint(min_stat, max_stat)
+        stats_character.append(stat_value)
+        cost.append(stats_cost[stat_value])
 
-# Printing and Formating
-print("Age: " + str(age))
-print("Sex: " + sex)
-print("Sexual Orientation: "+ sex_orient[0])
-print("Education: "+ education_final)
-print("Personality Traits:")
-for i in traits_char:
-    print("\t"+i)
-if genetics:
-    print("Genetics:")
-    for i in genetics:
+
+    # Printing and Formating
+    print("Age: " + str(age))
+    print("Sex: " + sex)
+    print("Sexual Orientation: "+ sex_orient[0])
+    print("Education: "+ education_final)
+    print("Personality Traits:")
+    for i in traits_char:
         print("\t"+i)
-print("Statistics:")
-print("\tDiplomacy:   "+ str(stats_character[0]) +
-      "\n\tMartial:     "+ str(stats_character[1]) +
-      "\n\tStewardship: "+ str(stats_character[2]) +
-      "\n\tIntrigue:    "+ str(stats_character[3]) +
-      "\n\tLearning:    "+ str(stats_character[4]) +
-      "\n\tProwess:     "+ str(stats_character[5])
-      )
-print("Cost: "+str(sum(cost)))
-if sum(cost)<=400:
-    print("Achievements Enabled")
-else:
-    print("Achievements Disabled")
+    if genetics:
+        print("Genetics:")
+        for i in genetics:
+            print("\t"+i)
+    print("Statistics:")
+    print("\tDiplomacy:   "+ str(stats_character[0]) +
+          "\n\tMartial:     "+ str(stats_character[1]) +
+          "\n\tStewardship: "+ str(stats_character[2]) +
+          "\n\tIntrigue:    "+ str(stats_character[3]) +
+          "\n\tLearning:    "+ str(stats_character[4]) +
+          "\n\tProwess:     "+ str(stats_character[5])
+          )
+    print("Cost: "+str(sum(cost)))
+    if sum(cost)<=400:
+        print("Achievements Enabled")
+    else:
+        print("Achievements Disabled")
+    return()
+
+try:
+    choix = int(input("""
+    Choose Education
+      0- Random
+      1- Diplomacy
+      2- Martial
+      3- Stewardship
+      4- Intrigue
+      5- Learning
+    """))
+except:
+    print("Not a valid input")
+    quit()
+if choix not in [0,1,2,3,4,5]:
+    print("Not a valid input")
+    quit()
+
+Creation(int(choix))
