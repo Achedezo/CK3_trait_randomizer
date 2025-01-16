@@ -53,7 +53,7 @@ stats = ["Diplomacy", "Martial", "Stewardship", "Intrigue", "Learning","Prowess"
 # Character Creation
 def Creation(educ):
     cost = []
-        # Age
+        # Age and sex
     sex = random.choice(["Male","Female"])
     sex_orient = random.choices(["Heterosexual","Homosexual","Bisexual","Asexual"],sex_orientation_weights)
     age = random.randint(min_age, max_age)
